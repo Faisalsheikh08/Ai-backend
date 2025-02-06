@@ -1,5 +1,5 @@
 Flask
 flask-cors
 pandas
-pickle5  # Only needed if using Python 3.8+
+gunicorn==19.7.1
 scikit-learn  # Required for loading the model
