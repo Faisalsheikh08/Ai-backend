@@ -4,7 +4,9 @@ import pickle
 import os
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS to allow requests from the Chrome extension
+
+CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all domains
+# Enable CORS to allow requests from the Chrome extension
 
 # Model file path
 MODEL_PATH = "./final_model.sav"
