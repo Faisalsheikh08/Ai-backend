@@ -5,8 +5,8 @@ import os
 
 app = Flask(__name__)
 
-# Allow all domains (or specific domains if necessary)
-CORS(app, resources={r"/*": {"origins": "https://vite.dev"}})  # You can change this to allow specific origins
+# Allow all domains or specify domains if needed
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "https://vite.dev"]}})  # Explicitly allow your frontend
 
 # Model file path
 MODEL_PATH = "./final_model.sav"
@@ -26,9 +26,14 @@ else:
 @app.route("/predict", methods=["POST", "OPTIONS"])
 def predict():
     if request.method == "OPTIONS":
-        # Preflight request
-        return jsonify({"message": "CORS preflight response OK"}), 200
-    
+        # Preflight request: respond with appropriate headers
+        response = jsonify({"message": "CORS preflight response OK"})
+        response.status_code = 200
+        response.headers["Access-Control-Allow-Origin"] = "http://localhost:5173"
+        response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        return response
+
     if model is None:
         return jsonify({"error": "Model not loaded. Check server logs."}), 500
 
