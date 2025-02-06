@@ -6,7 +6,6 @@ import os
 app = Flask(__name__)
 
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all domains
-# Enable CORS to allow requests from the Chrome extension
 
 # Model file path
 MODEL_PATH = "./final_model.sav"
@@ -28,21 +27,28 @@ def predict():
     if model is None:
         return jsonify({"error": "Model not loaded. Check server logs."}), 500
 
-    data = request.get_json()
-    if not data or "text" not in data:
-        return jsonify({"error": "Missing 'text' field in request"}), 400
-    
-    text = data["text"].strip()
-    if not text:
-        return jsonify({"error": "Empty 'text' field in request"}), 400
-    
     try:
+        # Log the incoming request data for debugging
+        data = request.get_json()
+        print(f"Received data: {data}")
+
+        if not data or "text" not in data:
+            return jsonify({"error": "Missing 'text' field in request"}), 400
+
+        text = data["text"].strip()
+        if not text:
+            return jsonify({"error": "Empty 'text' field in request"}), 400
+
+        # Perform prediction
         prediction = model.predict([text])
         result = "Fake" if prediction[0] else "Real"
         return jsonify({"prediction": result})
+
     except Exception as e:
+        # Log the error for debugging
+        print(f"Error during prediction: {str(e)}")
         return jsonify({"error": f"Prediction error: {str(e)}"}), 500
 
 
 if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0", port=5000)  # Set debug=False for production
+    app.run(debug=True, host="0.0.0.0", port=5000)  # Set debug=True for development
