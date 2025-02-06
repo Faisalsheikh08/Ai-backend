@@ -23,10 +23,6 @@ if os.path.exists(MODEL_PATH):
 else:
     print("❌ Error: Model file not found! Ensure 'final_model.sav' is in the correct path.")
 
-@app.route("/")
-def home():
-    return jsonify({"message": "Fake News Detection API is running!"})
-
 @app.route("/predict", methods=["POST"])
 def predict():
     if model is None:
@@ -46,6 +42,7 @@ def predict():
         return jsonify({"prediction": result})
     except Exception as e:
         return jsonify({"error": f"Prediction error: {str(e)}"}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=5000)  # Set debug=False for production
