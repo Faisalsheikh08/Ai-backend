@@ -1,6 +1,6 @@
 Flask
 flask-cors
+scikit-learn
 pandas
-gunicorn==19.7.1
-pickle5 
-scikit-learn  # Required for loading the model
+numpy
+gunicorn
