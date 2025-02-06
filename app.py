@@ -5,7 +5,8 @@ import os
 
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all domains
+# Allow all domains (or specific domains if necessary)
+CORS(app, resources={r"/*": {"origins": "https://vite.dev"}})  # You can change this to allow specific origins
 
 # Model file path
 MODEL_PATH = "./final_model.sav"
@@ -22,8 +23,12 @@ if os.path.exists(MODEL_PATH):
 else:
     print("❌ Error: Model file not found! Ensure 'final_model.sav' is in the correct path.")
 
-@app.route("/predict", methods=["POST"])
+@app.route("/predict", methods=["POST", "OPTIONS"])
 def predict():
+    if request.method == "OPTIONS":
+        # Preflight request
+        return jsonify({"message": "CORS preflight response OK"}), 200
+    
     if model is None:
         return jsonify({"error": "Model not loaded. Check server logs."}), 500
 
